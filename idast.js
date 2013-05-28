@@ -114,13 +114,12 @@
     st += "/" + node.type;
     for (var i = 0; i < node.declarations.length; ++i) {
       var decl = node.declarations[i];
-      if (decl.init) c(decl.init, st + "/declarations/" + i.toString(), "Expression");
+      if (decl.init) c(decl.init, st + "/declarations/" + i.toString() + (decl.id ? ":" + decl.id.name : ""), "Expression");
     }
   };
 
   base.Function = function(node, st, c) {
-    st += "/" + node.type;
-    c(node.body, st + "/body", "ScopeBody");
+    c(node.body, st + (node.id ? ":" + node.id.name : "") + "/body", "ScopeBody");
   };
   base.ScopeBody = function(node, st, c) {
     st += "/" + node.type;
