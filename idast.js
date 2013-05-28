@@ -199,7 +199,7 @@
     st += "/" + node.type;
     c(node, st, "Node");
     c(node.object, st + "/object", "Expression");
-    if (node.computed) c(node.property, st + "/property", "Expression");
+    c(node.property, st + "/property", "Expression");
   };
   base.Identifier = base.Literal = ignore;
 });
