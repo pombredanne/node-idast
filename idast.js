@@ -122,7 +122,6 @@
     c(node.body, st + (node.id ? ":" + node.id.name : "") + "/body", "ScopeBody");
   };
   base.ScopeBody = function(node, st, c) {
-    st += "/" + node.type;
     c(node, st, "Statement");
   };
 
