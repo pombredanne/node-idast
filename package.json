@@ -1,0 +1,17 @@
+{
+  "name": "idast",
+  "description": "Walks a JavaScript AST, giving each AST node a unique and meaningful ID",
+  "version": "0.0.1",
+  "author": "Quinn Slack <sqs@sourcegraph.com>",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/sqs/node-idast.git"
+  },
+  "main": "idast.js",
+  "dependencies": {
+    "acorn": "git://github.com/marijnh/acorn.git"
+  },
+  "devDependencies": {
+    "mocha": "1.10.0"
+  }
+}
