@@ -10,16 +10,6 @@ if (process.argv.length != 3) {
 var file = process.argv[2];
 console.error("# AST node IDs in '" + file + "':");
 var i = 0;
-// walk.simple(acorn.parse(fs.readFileSync(file)), {
-//   Statement: function(node, st) {
-//     console.log(st);
-//     i++;
-//   },
-//   Expression: function(node, st) {
-//     console.log(st);
-//     i++;
-//   },
-// }, idast.base, "");
 walk.recursive(acorn.parse(fs.readFileSync(file)), "", {
   Node: function(node, st, c) {
     console.log(st, "@", node.start + ":" + node.end);
