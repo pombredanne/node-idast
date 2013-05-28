@@ -111,7 +111,6 @@
   };
   base.ForInit = function(node, st, c) {
     st += "/" + node.type;
-    c(node, st, "Node");
     if (node.type == "VariableDeclaration") c(node, st);
     else c(node, st, "Expression");
   };
