@@ -14,10 +14,9 @@ describe("assignIds", function() {
         ids.push(node._id);
       },
     }, idast.base);
-    console.log(ids);
     assert(ids.indexOf("test/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
     assert.equal("test/Program", ids[0]);
-    assert.equal(32, ids.length);
+    assert.equal(31, ids.length);
   });
 });
 
@@ -31,6 +30,6 @@ describe("visitor", function() {
     }, idast.base, "");
     assert(ids.indexOf("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
     assert.equal("/Program", ids[0]);
-    assert.equal(32, ids.length);
+    assert.equal(31, ids.length);
   });
 });
