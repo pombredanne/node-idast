@@ -10,16 +10,14 @@ describe("assignIds", function() {
     idast.assignIds(ast, "test");
     var ids = [];
     walk.simple(ast, {
-      Statement: function(node, st, c) {
-        ids.unshift(node._id);
+      Node: function(node, st, c) {
+        ids.push(node._id);
       },
-      Expression: function(node, st, c) {
-        ids.unshift(node._id);
-      },
-    });
+    }, idast.base);
+    console.log(ids);
     assert(ids.indexOf("test/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
-    assert.equal("test/Program/body/0", ids[0]);
-    assert.equal(27, ids.length);
+    assert.equal("test/Program", ids[0]);
+    assert.equal(32, ids.length);
   });
 });
 
@@ -27,15 +25,12 @@ describe("visitor", function() {
   it("passes AST node IDs to visitor", function() {
     var ids = [];
     walk.simple(mkAST(), {
-      Statement: function(node, st, c) {
-        ids.unshift(st);
-      },
-      Expression: function(node, st, c) {
-        ids.unshift(st);
+      Node: function(node, st, c) {
+        ids.push(st);
       },
     }, idast.base, "");
     assert(ids.indexOf("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
-    assert.equal("/Program/body/0", ids[0]);
-    assert.equal(27, ids.length);
+    assert.equal("/Program", ids[0]);
+    assert.equal(32, ids.length);
   });
 });
