@@ -67,7 +67,7 @@
       var cs = node.cases[i];
       if (cs.test) c(cs.test, st + "/test/" + i.toString(), "Expression");
       for (var j = 0; j < cs.consequent.length; ++j)
-        c(cs.consequent[j], st + "/consequent/" + j.toString(), "Statement");
+        c(cs.consequent[j], st + "/test/" + i.toString() + "/consequent/" + j.toString(), "Statement");
     }
   };
   base.ReturnStatement = function(node, st, c) {
