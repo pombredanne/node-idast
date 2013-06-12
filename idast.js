@@ -160,8 +160,11 @@
   base.ObjectExpression = function(node, st, c) {
     st += "/" + node.type;
     c(node, st, "Node");
-    for (var i = 0; i < node.properties.length; ++i)
-      c(node.properties[i].value, st + "/properties/" + i.toString(), "Expression");
+    for (var i = 0; i < node.properties.length; ++i) {
+      var prop = node.properties[i];
+      c(prop.key, st + "/properties/" + i.toString() + "/key", "Expression");
+      c(prop.value, st + "/properties/" + i.toString() + "/value", "Expression");
+    }
   };
   base.FunctionExpression = base.FunctionDeclaration;
   base.SequenceExpression = function(node, st, c) {
