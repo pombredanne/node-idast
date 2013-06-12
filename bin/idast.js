@@ -13,6 +13,7 @@ var i = 0;
 walk.recursive(acorn.parse(fs.readFileSync(file)), "", {
   Node: function(node, st, c) {
     console.log(st, "@", node.start + ":" + node.end, node.type == "Identifier" ? node.name : "");
+    i++;
   },
 }, idast.base);
 console.error("# Printed " + i + " AST node IDs in '" + file + "'");
