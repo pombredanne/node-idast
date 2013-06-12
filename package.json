@@ -13,7 +13,7 @@
   },
   "main": "idast.js",
   "dependencies": {
-    "acorn": "git://github.com/marijnh/acorn.git"
+    "acorn": "0.3.1"
   },
   "devDependencies": {
     "mocha": "1.10.0"
