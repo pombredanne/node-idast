@@ -28,14 +28,16 @@
   };
 
   function traverse(obj, st, c) {
-    for (var key in obj) if (obj.hasOwnProperty(key)) {
+    var keys = Object.keys(obj).sort();
+    for (var i = 0; i < keys.length; ++i) {
+      var key = keys[i];
       var v = obj[key];
       if (!v) continue;
       if (v instanceof Array) {
-        for (var i = 0; i < v.length; ++i) {
-          var st_ = st + "/" + key + "/" + i;
-          if (v[i].type) c(v[i], st_ + "/" + v[i].type);
-          else traverse(v[i], st_, c);
+        for (var j = 0; j < v.length; ++j) {
+          var st_ = st + "/" + key + "/" + j;
+          if (v[j].type) c(v[j], st_ + "/" + v[j].type);
+          else traverse(v[j], st_, c);
         }
       } else if (typeof v == "object" && !(v instanceof RegExp)) {
         c(v, st + "/" + key + "/" + v.type);
