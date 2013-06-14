@@ -12,7 +12,7 @@ describe("assignIds", function() {
     walk.simple(ast, walkall.makeVisitors(function(node) {
       ids.push(node._id);
     }), idast.walkers);
-    ids.should.include("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0");
+    ids.should.include("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0/Literal");
     ids.should.include("/Program");
     ids.length.should.equal(36);
   });
@@ -24,7 +24,7 @@ describe("visitor", function() {
     walk.simple(mkAST(), walkall.makeVisitors(function(node, st) {
       ids.push(st || "/Program");
     }), idast.walkers);
-    ids.should.include("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0");
+    ids.should.include("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0/Literal");
     ids.should.include("/Program");
     ids.length.should.equal(36);
   });

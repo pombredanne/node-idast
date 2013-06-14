@@ -22,8 +22,7 @@
   function ignore(node, st, c) { c(node, st, "Node"); }
 
   exports.visitor = function(node, st, c) {
-    if (!st) st = "";
-    st += "/" + node.type;
+    if (!st) st = "/Program";
     if (node.id && node.id.name) st += ":" + node.id.name;
     traverse(node, st, c);
   };
@@ -35,11 +34,11 @@
       if (v instanceof Array) {
         for (var i = 0; i < v.length; ++i) {
           var st_ = st + "/" + key + "/" + i;
-          if (v[i].type) c(v[i], st_);
+          if (v[i].type) c(v[i], st_ + "/" + v[i].type);
           else traverse(v[i], st_, c);
         }
       } else if (typeof v == "object" && !(v instanceof RegExp)) {
-        c(v, st + "/" + key);
+        c(v, st + "/" + key + "/" + v.type);
       }
     }
   }
