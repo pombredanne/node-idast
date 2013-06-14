@@ -1,7 +1,7 @@
 {
   "name": "idast",
   "description": "Walks a JavaScript AST, giving each AST node a unique and meaningful ID",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "readmeFilename": "README.md",
   "author": {
     "name": "Quinn Slack",
