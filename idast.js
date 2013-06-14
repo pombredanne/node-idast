@@ -3,211 +3,47 @@
 
 (function(mod) {
   if (typeof exports == "object" && typeof module == "object")
-    return mod(exports, require("acorn/util/walk")); // CommonJS
+    return mod(exports, require("acorn/util/walk"), require("walkall")); // CommonJS
   if (typeof define == "function" && define.amd)
-    return define(["exports", "acorn/util/walk"], mod); // AMD
-  mod(self.idast || (self.idast = {}), acorn.walk); // Plain browser env
-})(function(exports, walk) {
+    return define(["exports", "acorn/util/walk", "walkall"], mod); // AMD
+  mod(self.idast || (self.idast = {}), acorn.walk, walkall); // Plain browser env
+})(function(exports, walk, walkall) {
   "use strict";
 
   // Walks the AST starting at node, assigning a unique and meaningful ID to each node's "_id"
   // property.
-  exports.assignIds = function(node, initialId) {
-    walk.simple(node, {
-      Node: function(node, st, c) {
-        node._id = st;
-      },
-    }, base, initialId || "");
+  exports.assignIds = function(node) {
+    walk.simple(node, walkall.makeVisitors(function(node, st) {
+      node._id = st || "/Program";
+    }), exports.walkers);
   };
 
   function skipThrough(node, st, c) { c(node, st); }
   function ignore(node, st, c) { c(node, st, "Node"); }
 
-  // Node walkers.
-  var base = exports.base = {};
-  base.Node = function(node, st, c) {};
-  base.Program = base.BlockStatement = function(node, st, c) {
+  exports.visitor = function(node, st, c) {
     if (!st) st = "";
     st += "/" + node.type;
-    c(node, st, "Node");
-    for (var i = 0; i < node.body.length; ++i)
-      c(node.body[i], st + "/body/" + i.toString(), "Statement");
-  };
-  base.Statement = skipThrough;
-  base.EmptyStatement = ignore;
-  base.ExpressionStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.expression, st + "/expression", "Expression");
-  };
-  base.IfStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.test, st + "/test", "Expression");
-    c(node.consequent, st + "/consequent", "Statement");
-    if (node.alternate) c(node.alternate, st + "/alternate", "Statement");
-  };
-  base.LabeledStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.body, st + "/body", "Statement");
-  };
-  base.BreakStatement = base.ContinueStatement = ignore;
-  base.WithStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.object, st + "/object", "Expression");
-    c(node.body, st + "/body", "Statement");
-  };
-  base.SwitchStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.discriminant, st + "/discriminant", "Expression");
-    for (var i = 0; i < node.cases.length; ++i) {
-      var cs = node.cases[i];
-      if (cs.test) c(cs.test, st + "/test/" + i.toString(), "Expression");
-      for (var j = 0; j < cs.consequent.length; ++j)
-        c(cs.consequent[j], st + "/test/" + i.toString() + "/consequent/" + j.toString(), "Statement");
-    }
-  };
-  base.ReturnStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    if (node.argument) c(node.argument, st + "/argument", "Expression");
-  };
-  base.ThrowStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.argument, st + "/argument", "Expression");
-  };
-  base.TryStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.block, st + "/block", "Statement");
-    if (node.handler) c(node.handler.body, st + "/handler", "ScopeBody");
-    if (node.finalizer) c(node.finalizer, st + "/finalizer", "Statement");
-  };
-  base.WhileStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.test, st + "/test", "Expression");
-    c(node.body, st + "/body", "Statement");
-  };
-  base.DoWhileStatement = base.WhileStatement;
-  base.ForStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    if (node.init) c(node.init, st + "/init", "ForInit");
-    if (node.test) c(node.test, st + "/test", "Expression");
-    if (node.update) c(node.update, st + "/update", "Expression");
-    c(node.body, st + "/body", "Statement");
-  };
-  base.ForInStatement = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.left, st + "/left", "ForInit");
-    c(node.right, st + "/right", "Expression");
-    c(node.body, st + "/body", "Statement");
-  };
-  base.ForInit = function(node, st, c) {
-    st += "/" + node.type;
-    if (node.type == "VariableDeclaration") c(node, st);
-    else c(node, st, "Expression");
-  };
-  base.DebuggerStatement = ignore;
-
-  base.FunctionDeclaration = function(node, st, c) {
-    st += "/" + node.type;
-    if (node.id) st += ":" + node.id.name;
-    c(node, st, "Function");
-  };
-  base.VariableDeclaration = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    st += "/declarations";
-    for (var i = 0; i < node.declarations.length; ++i) {
-      var decl = node.declarations[i];
-      var sd = st + "/" + i.toString() + (decl.id ? ":" + decl.id.name : "");
-      c(decl, sd);
-    }
-  };
-  base.VariableDeclarator = function(node, st, c) {
-    c(node, st, "Node");
-    if (node.id.type == "Identifier") c(node.id, st + "/id");
-    if (node.init) {
-      c(node.init, st + "/init", "Expression");
-    }
+    if (node.id && node.id.name) st += ":" + node.id.name;
+    traverse(node, st, c);
   };
 
-  base.Function = function(node, st, c) {
-    c(node, st, "Node");
-    if (node.id) c(node.id, st + "/id");
-    for (var i = 0; i < node.params.length; ++i) {
-      var param = node.params[i];
-      c(param, st + "/params/" + i.toString());
+  function traverse(obj, st, c) {
+    for (var key in obj) if (obj.hasOwnProperty(key)) {
+      var v = obj[key];
+      if (!v) continue;
+      if (v instanceof Array) {
+        for (var i = 0; i < v.length; ++i) {
+          var st_ = st + "/" + key + "/" + i;
+          if (v[i].type) c(v[i], st_);
+          else traverse(v[i], st_, c);
+        }
+      } else if (typeof v == "object" && !(v instanceof RegExp)) {
+        c(v, st + "/" + key);
+      }
     }
-    c(node.body, st + "/body", "ScopeBody");
-  };
-  base.ScopeBody = function(node, st, c) {
-    c(node, st, "Statement");
-  };
+  }
 
-  base.Expression = skipThrough;
-  base.ThisExpression = ignore;
-  base.ArrayExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    for (var i = 0; i < node.elements.length; ++i) {
-      var elt = node.elements[i];
-      if (elt) c(elt, st + "/elements/" + i.toString(), "Expression");
-    }
-  };
-  base.ObjectExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    for (var i = 0; i < node.properties.length; ++i) {
-      var prop = node.properties[i];
-      c(prop.key, st + "/properties/" + i.toString() + "/key", "Expression");
-      c(prop.value, st + "/properties/" + i.toString() + "/value", "Expression");
-    }
-  };
-  base.FunctionExpression = base.FunctionDeclaration;
-  base.SequenceExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    for (var i = 0; i < node.expressions.length; ++i)
-      c(node.expressions[i], st + "/expressions/" + i.toString(), "Expression");
-  };
-  base.UnaryExpression = base.UpdateExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.argument, st + "/argument", "Expression");
-  };
-  base.BinaryExpression = base.AssignmentExpression = base.LogicalExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.left, st + "/left", "Expression");
-    c(node.right, st + "/right", "Expression");
-  };
-  base.ConditionalExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.test, st + "/test", "Expression");
-    c(node.consequent, st + "/consequent", "Expression");
-    c(node.alternate, st + "/alternate", "Expression");
-  };
-  base.NewExpression = base.CallExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.callee, st + "/callee", "Expression");
-    if (node.arguments) for (var i = 0; i < node.arguments.length; ++i)
-      c(node.arguments[i], st + "/arguments/" + i.toString(), "Expression");
-  };
-  base.MemberExpression = function(node, st, c) {
-    st += "/" + node.type;
-    c(node, st, "Node");
-    c(node.object, st + "/object", "Expression");
-    c(node.property, st + "/property", "Expression");
-  };
-  base.Identifier = base.Literal = ignore;
+  // Node walkers.
+  exports.walkers = walkall.makeVisitors(exports.visitor);
 });

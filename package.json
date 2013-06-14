@@ -13,10 +13,12 @@
   },
   "main": "idast.js",
   "dependencies": {
-    "acorn": "0.3.1"
+    "acorn": "0.3.1",
+    "walkall": "0.0.1"
   },
   "devDependencies": {
-    "mocha": "1.10.0"
+    "mocha": "1.10.0",
+    "should": "~1.2.2"
   },
   "scripts": {
     "test": "mocha"
