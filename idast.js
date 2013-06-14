@@ -14,11 +14,6 @@ exports.assignIds = function(node) {
 function skipThrough(node, st, c) { c(node, st); }
 function ignore(node, st, c) { c(node, st, "Node"); }
 
-exports.visitor = function(node, st, c) {
-  if (!st) st = "/Program";
-  traverse(node, st, c);
-};
-
 function traverse(obj, st, c) {
   var keys = Object.keys(obj).sort();
   for (var i = 0; i < keys.length; ++i) {
@@ -44,4 +39,7 @@ function objName(obj) {
 }
 
 // Node walkers.
-exports.walkers = walkall.makeVisitors(exports.visitor);
+exports.walkers = walkall.makeVisitors(function(node, st, c) {
+  if (!st) st = "/Program";
+  traverse(node, st, c);
+});
