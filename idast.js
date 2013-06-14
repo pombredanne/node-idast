@@ -39,7 +39,7 @@
           if (v[j].type) c(v[j], st_ + "/" + v[j].type);
           else traverse(v[j], st_, c);
         }
-      } else if (typeof v == "object" && !(v instanceof RegExp)) {
+      } else if (typeof v == "object" && !(v instanceof RegExp) && v.type) {
         c(v, st + "/" + key + "/" + v.type);
       }
     }
