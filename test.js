@@ -29,3 +29,10 @@ describe("visitor", function() {
     ids.length.should.equal(36);
   });
 });
+
+describe("objName", function() {
+  it("escapes non-ASCII chars", function(done) {
+    idast.objName({id: {name: 'foo\u0000'}}).should.equal(":foo\\u0000");
+    done();
+  });
+});

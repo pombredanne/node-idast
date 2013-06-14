@@ -29,10 +29,18 @@ function traverse(obj, st, c) {
   }
 }
 
-function objName(obj) {
+// objName takes a node or node-like object (e.g., an ObjectExpression property element) and
+// attempts to construct a name for it. If no name can be constructed, the empty string is returned.
+var objName = exports.objName = function(obj) {
   var o = obj.id || obj.key;
-  if (o && (o.name || o.value)) return ":" + (o.name || o.value);
+  if (o && (o.name || o.value)) return ":" + jsonEscape(o.name || o.value);
   else return "";
+}
+
+// jsonEscape returns the JSON representation of str without the surrounding quotes.
+function jsonEscape(str) {
+  var esc = JSON.stringify(str);
+  return esc.slice(1, esc.length - 1);
 }
 
 // Node walkers.
