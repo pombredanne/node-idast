@@ -23,7 +23,6 @@
 
   exports.visitor = function(node, st, c) {
     if (!st) st = "/Program";
-    if (node.id && node.id.name) st += ":" + node.id.name;
     traverse(node, st, c);
   };
 
@@ -36,13 +35,19 @@
       if (v instanceof Array) {
         for (var j = 0; j < v.length; ++j) {
           var st_ = st + "/" + key + "/" + j;
-          if (v[j].type) c(v[j], st_ + "/" + v[j].type);
-          else traverse(v[j], st_, c);
+          if (v[j].type) c(v[j], st_ + "/" + v[j].type + objName(v[j]));
+          else traverse(v[j], st_ + objName(v[j]), c);
         }
       } else if (typeof v == "object" && !(v instanceof RegExp) && v.type) {
-        c(v, st + "/" + key + "/" + v.type);
+        c(v, st + "/" + key + "/" + v.type + objName(v));
       }
     }
+  }
+
+  function objName(obj) {
+    var o = obj.id || obj.key;
+    if (o && (o.name || o.value)) return ":" + (o.name || o.value);
+    else return "";
   }
 
   // Node walkers.
