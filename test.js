@@ -16,7 +16,7 @@ describe("assignIds", function() {
     }, idast.base);
     assert(ids.indexOf("test/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
     assert.equal("test/Program", ids[0]);
-    assert.equal(34, ids.length);
+    assert.equal(36, ids.length);
   });
 });
 
@@ -30,6 +30,6 @@ describe("visitor", function() {
     }, idast.base, "");
     assert(ids.indexOf("/Program/body/0/ExpressionStatement/expression/CallExpression/arguments/0") !== -1);
     assert.equal("/Program", ids[0]);
-    assert.equal(34, ids.length);
+    assert.equal(36, ids.length);
   });
 });

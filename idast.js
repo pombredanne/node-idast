@@ -124,13 +124,18 @@
   base.VariableDeclaration = function(node, st, c) {
     st += "/" + node.type;
     c(node, st, "Node");
+    st += "/declarations";
     for (var i = 0; i < node.declarations.length; ++i) {
       var decl = node.declarations[i];
-      var sd = st + "/declarations/" + i.toString() + (decl.id ? ":" + decl.id.name : "");
-      if (decl.id.type == "Identifier") c(decl.id, sd + "/id");
-      if (decl.init) {
-        c(decl.init, sd + "/init", "Expression");
-      }
+      var sd = st + "/" + i.toString() + (decl.id ? ":" + decl.id.name : "");
+      c(decl, sd);
+    }
+  };
+  base.VariableDeclarator = function(node, st, c) {
+    c(node, st, "Node");
+    if (node.id.type == "Identifier") c(node.id, st + "/id");
+    if (node.init) {
+      c(node.init, st + "/init", "Expression");
     }
   };
 
