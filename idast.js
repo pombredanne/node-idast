@@ -11,9 +11,6 @@ exports.assignIds = function(node) {
   }), exports.walkers);
 };
 
-function skipThrough(node, st, c) { c(node, st); }
-function ignore(node, st, c) { c(node, st, "Node"); }
-
 function traverse(obj, st, c) {
   var keys = Object.keys(obj).sort();
   for (var i = 0; i < keys.length; ++i) {
