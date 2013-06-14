@@ -14,7 +14,7 @@
   "main": "idast.js",
   "dependencies": {
     "acorn": "0.3.1",
-    "walkall": "0.0.1"
+    "walkall": "0.0.2"
   },
   "devDependencies": {
     "mocha": "1.10.0",
