@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/sqs/node-idast.git"
+    "url": "git://github.com/sourcegraph/node-idast.git"
   },
   "main": "idast.js",
   "dependencies": {
